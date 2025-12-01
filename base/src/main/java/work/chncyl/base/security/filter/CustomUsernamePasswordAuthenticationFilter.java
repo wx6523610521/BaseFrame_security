@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import work.chncyl.base.security.SecurityHandlerConfig;
 import work.chncyl.base.security.processor.CustomUsernamePasswordAuthenticationToken;
 
 import java.io.IOException;
@@ -21,13 +22,16 @@ public class CustomUsernamePasswordAuthenticationFilter extends AbstractAuthenti
 
     public CustomUsernamePasswordAuthenticationFilter(String defaultFilterProcessesUrl, AuthenticationManager authenticationManager) {
         super(defaultFilterProcessesUrl, authenticationManager);
+        // 设置成功处理器
+        setAuthenticationSuccessHandler(SecurityHandlerConfig.loginSuccessHandler());
+        // 设置失败处理器
+        setAuthenticationFailureHandler(SecurityHandlerConfig.loginFailureHandler());
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         // 登录认证
-        if (request.getContentType().equals("application/json")
-                || request.getContentType().equals("application/json")) {
+        if (request.getContentType().equals("application/json")) {
             CustomUsernamePasswordAuthenticationToken authenticationToken;
             ObjectMapper mapper = new ObjectMapper();
             try {
